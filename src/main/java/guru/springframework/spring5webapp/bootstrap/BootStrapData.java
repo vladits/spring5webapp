@@ -31,32 +31,39 @@ public class BootStrapData implements CommandLineRunner {
 
         System.out.println("Started in Bootstrap");
 
-        Publisher sfg = new Publisher();
-        sfg.setName("SFG Publishing");
-        sfg.setCity("St Petersburg");
-        sfg.setState("FL");
+        Publisher publisher = new Publisher();
+        publisher.setName("SFG Publishing");
+        publisher.setCity("St Petersburg");
+        publisher.setState("FL");
 
-        publisherRepository.save(sfg);
+        publisherRepository.save(publisher);
 
         System.out.println("Publisher Count: " + publisherRepository.count());
 
         Author eric = new Author("Eric", "Evans");
         Book ddd = new Book("Domain Driven Design", "123123");
 
-        eric.getBooks().add(ddd);
-        ddd.getAuthors().add(eric);
-
-        authorRepository.save(eric);
-        bookRepository.save(ddd);
+        AddBook(publisher, eric, ddd);
 
         Author rod = new Author("Rod", "Johnson");
         Book noEJB = new Book("J2EE Development without EJB", "456456");
+
+        AddBook(publisher, rod, noEJB);
+
+        System.out.println("Number of Authors: " + authorRepository.count());
+        System.out.println("Number of Books: " + bookRepository.count());
+        System.out.println("Publisher Number of Books: " + publisher.getBooks().size());
+    }
+
+    private void AddBook(Publisher publisher, Author rod, Book noEJB) {
         rod.getBooks().add(noEJB);
         noEJB.getAuthors().add(rod);
 
+        noEJB.setPublisher(publisher);
+        publisher.getBooks().add(noEJB);
+
         authorRepository.save(rod);
         bookRepository.save(noEJB);
-
-        System.out.println("Number of Books: " + bookRepository.count());
+        publisherRepository.save(publisher);
     }
 }
